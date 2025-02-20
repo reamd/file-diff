@@ -1,0 +1,12 @@
+{
+  "name": "file-diff",
+  "version": "1.0.0",
+  "description": "基于mac diff进行封装的文件diff，输出结构化结果带行号",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
