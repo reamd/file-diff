@@ -1,4 +1,4 @@
-const { exec } = require('child_process');
+const { execSync } = require('child_process');
 const path = require('path');
 /**
  * 调用 macOS 的 diff 命令并解析输出
@@ -6,16 +6,16 @@ const path = require('path');
  * @param {string} file2 - 第二个文件路径
  */
 function compareFiles(file1, file2) {
-  return new Promise((resolve, reject) => {
-    const diffCommand = `diff -u ${path.resolve(file1)} ${path.resolve(file2)}`;
-    exec(diffCommand, (error, stdout, stderr) => {
-      if (!stdout) {
-        reject(error);
-        return;
-      }
-      resolve(stdout);
-    });
-  });
+  const diffCommand = `diff -u ${path.resolve(file1)} ${path.resolve(file2)}`;
+  let res;
+  try {
+    res = execSync(diffCommand);
+  } catch (error) {
+    if (error.stdout) {
+      res = error.stdout.toString();
+    }
+  }
+  return res;
 }
 
 /**
@@ -53,15 +53,16 @@ function parseDiffOutput(diffOutput) {
 }
 
 // 主函数
-export default async function main(file1, file2) {
+function main(file1, file2) {
   try {
-    const diffOutput = await compareFiles(file1, file2);
+    const diffOutput = compareFiles(file1, file2);
     const changes = parseDiffOutput(diffOutput);
     return changes;
   } catch (error) {
-    console.error('发生错误:', error.message);
+    console.error('发生错误:', error);
   }
 }
 
-// 使用demo
 // main('1.txt', '2.txt');
+
+module.exports = main;
